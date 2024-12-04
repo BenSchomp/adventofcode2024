@@ -30,7 +30,7 @@ def findWord( startY, startX, word ):
 def findWord2( y, x ):
   global grid, width, height
 
-  if x == 0 or x == width-1 or y == 0 or y == height-1:
+  if x <= 0 or x >= width-1 or y <= 0 or y >= height-1:
     return 0
 
   if not( (grid[y-1][x+1] == 'M' and grid[y+1][x-1] == 'S') or\
