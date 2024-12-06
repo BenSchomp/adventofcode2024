@@ -18,6 +18,9 @@ def display(grid, highlight=None):
 # --- main ---
 
 grid = []
+EMPTY = -1
+BLOCK = -2
+dirs = [(0,1), (1,0), (0,-1), (-1,0)] # N, E, S, W
 
 file = open('day-06.txt', 'r')
 curRow = 0
@@ -27,9 +30,9 @@ for line in file:
   curCol = 0
   for c in line.strip():
     if c == '.':
-      row.append(0)
+      row.append(EMPTY)
     elif c == '#':
-      row.append(1)
+      row.append(BLOCK)
     elif c == '^':
       (startX, startY) = (curCol, curRow)
       row.append(0)
@@ -52,15 +55,7 @@ visited.add( (x,y) )
 dir = 0 # 0: north / 1: east / 2: south / 3: west
 
 while True:
-  dx = dy = 0
-  if dir == 0:
-    dy = -1
-  elif dir == 1:
-    dx = 1
-  elif dir == 2:
-    dy = 1
-  elif dir == 3:
-    dx = -1
+  (dx, dy) = dirs[dir]
 
   x += dx
   y += dy
@@ -68,7 +63,7 @@ while True:
   if x < 0 or x >= width or y < 0 or y >= height:
     break
 
-  if grid[y][x] == 1:
+  if grid[y][x] == BLOCK:
     dir = (dir+1)%4
     x -= dx
     y -= dy
