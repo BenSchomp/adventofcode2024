@@ -2,33 +2,22 @@
 def concat( a, b ):
   return int( str(a) + str(b) )
 
-# this is recursive (if part two, call w p2 as True)
-def solve( r, v, p2=False ):
-  # base case: 2 values, try all the operators and see if we get a match
-  if len(v) == 2:
-    if v[0] + v[1] == r:
-      return True
-    elif v[0] * v[1] == r:
-      return True
-    elif p2 and concat(v[0], v[1]) == r:
-      return True
-    else:
-      return False
+# this is a recursive function
+# r: the result to look for
+# t: the terms (a list)
+# p2:  if True, use "part two" logic
+def solve( r, t, p2=False ):
+  # base case: only 2 terms, try all the operators and see if we get a match
+  if len(t) == 2:
+    return (t[0] + t[1] == r) or \
+           (t[0] * t[1] == r) or \
+           (p2 and (concat(t[0], t[1]) == r))
 
-  # else recurse, iterating through the operators on the 1st two values
+  # else recurse, iterating through the operators on the 1st two terms
   else:
-    result = solve( r, [v[0]+v[1]] + v[2:], p2 )
-    if result:
-      return True
-
-    result = solve( r, [v[0]*v[1]] + v[2:], p2 )
-    if result:
-      return True
-
-    if p2:
-      return solve( r, [concat(v[0], v[1])] + v[2:], p2 )
-    else:
-      return False
+    return solve(r, [t[0]+t[1]] + t[2:], p2 ) or \
+           solve( r, [t[0]*t[1]] + t[2:], p2 ) or \
+           (p2 and solve( r, [concat(t[0], t[1])] + t[2:], p2 ) )
 
 # --- main ---
 part_one = part_two = 0
@@ -39,12 +28,12 @@ for line in file:
     exit()
   (left, right) = line.strip().split(':')
   result = int(left)
-  values = [int(x) for x in right.split()]
+  terms = [int(x) for x in right.split()]
 
-  if solve( result, values ):
+  if solve( result, terms ):
     part_one += result
 
-  if solve( result, values, True ):
+  if solve( result, terms, True ):
     part_two += result
 
 file.close()
