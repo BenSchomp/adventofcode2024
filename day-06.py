@@ -55,39 +55,39 @@ print( len(visited) )
 # --- PART TWO ---
 
 part_two = 0
+path = visited
 
-for j in range(height):
-  for i in range(width):
-    if grid[j][i] == BLOCK:
-      continue
+for (i, j) in path:
+  if grid[j][i] == BLOCK:
+    continue
+  else:
+    grid[j][i] = BLOCK
+
+  (x, y) = (startX, startY)
+  dir = 0
+  visited = set()
+  visited.add( (x,y,dir) )
+
+  while True:
+    (dx, dy) = dirs[dir]
+    x += dx
+    y += dy
+
+    if x < 0 or x >= width or y < 0 or y >= height:
+      break
+
+    if grid[y][x] == BLOCK:
+      dir = (dir+1)%4
+      x -= dx
+      y -= dy
+
+    if (x,y,dir) in visited:
+      part_two += 1
+      break
     else:
-      grid[j][i] = BLOCK
+      visited.add( (x,y,dir) )
 
-    (x, y) = (startX, startY)
-    dir = 0
-    visited = set()
-    visited.add( (x,y,dir) )
-
-    while True:
-      (dx, dy) = dirs[dir]
-      x += dx
-      y += dy
-
-      if x < 0 or x >= width or y < 0 or y >= height:
-        break
-
-      if grid[y][x] == BLOCK:
-        dir = (dir+1)%4
-        x -= dx
-        y -= dy
-
-      if (x,y,dir) in visited:
-        part_two += 1
-        break
-      else:
-        visited.add( (x,y,dir) )
-
-    grid[j][i] = EMPTY
+  grid[j][i] = EMPTY
 
 print( part_two )
 
