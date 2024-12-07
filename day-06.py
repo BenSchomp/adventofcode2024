@@ -1,26 +1,7 @@
-
-def display(grid, highlight=None):
-  compass = ['N', 'E', 'S', 'W']
-  for r in range(len(grid)):
-    for c in range(len(grid[r])):
-      x = '.'
-      if grid[r][c] == 1:
-        x = '#'
-      if highlight and c == highlight[0] and r == highlight[1]:
-        x = 'O'
-        #print( c, r, highlight[0], highlight[1] )
-      if grid[r][c] >= 10:
-        x = compass[grid[r][c] - 10]
-      print( x, end='' )
-    print()
-  print()
-
-# --- main ---
-
 grid = []
 EMPTY = -1
 BLOCK = -2
-dirs = [(0,1), (1,0), (0,-1), (-1,0)] # N, E, S, W
+dirs = [(0,-1), (1,0), (0,1), (-1,0)] # N, E, S, W
 
 file = open('day-06.txt', 'r')
 curRow = 0
@@ -35,7 +16,7 @@ for line in file:
       row.append(BLOCK)
     elif c == '^':
       (startX, startY) = (curCol, curRow)
-      row.append(0)
+      row.append(EMPTY)
 
     curCol += 1
 
@@ -52,11 +33,10 @@ height = curRow
 (x, y) = (startX, startY)
 visited = set()
 visited.add( (x,y) )
-dir = 0 # 0: north / 1: east / 2: south / 3: west
+dir = 0 # (0: N, 1: E, 2: S, 3: W)
 
 while True:
   (dx, dy) = dirs[dir]
-
   x += dx
   y += dy
 
@@ -78,65 +58,36 @@ part_two = 0
 
 for j in range(height):
   for i in range(width):
-    if (j == startX and i == startY) or grid[j][i] == 1:
+    if grid[j][i] == BLOCK:
       continue
     else:
-      grid[j][i] = 1
-
-    #for a in range(height):
-    #  for b in range(width):
-    #    if grid[a][b] >= 10:
-    #      grid[a][b] = 0
+      grid[j][i] = BLOCK
 
     (x, y) = (startX, startY)
     dir = 0
     visited = set()
     visited.add( (x,y,dir) )
 
-    #print( 'try:', i, j )
-    #print( 'visited:', visited )
-    #grid[y][x] = 10
-    #display(grid)
-
     while True:
-      dx = dy = 0
-      if dir == 0:
-        dy = -1
-      elif dir == 1:
-        dx = 1
-      elif dir == 2:
-        dy = 1
-      elif dir == 3:
-        dx = -1
-
+      (dx, dy) = dirs[dir]
       x += dx
       y += dy
 
       if x < 0 or x >= width or y < 0 or y >= height:
-        #display(grid)
-        #print( "    FELL OFF")
         break
 
-      if grid[y][x] == 1:
+      if grid[y][x] == BLOCK:
         dir = (dir+1)%4
         x -= dx
         y -= dy
 
-        #print(x,y,dir)
-        #display(grid)
-
       if (x,y,dir) in visited:
         part_two += 1
-        #print( visited )
-        #print( x,y,dir )
-        #display(grid, (i, j))
-        print( "   LOOP!", i, j, part_two)
         break
       else:
         visited.add( (x,y,dir) )
-        #grid[y][x] = 10 + dir
 
-    grid[j][i] = 0
+    grid[j][i] = EMPTY
 
 print( part_two )
 
