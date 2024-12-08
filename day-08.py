@@ -2,7 +2,8 @@
 file = open('day-08.txt', 'r')
 
 antennas = {}
-antinodes = set()
+part_one = set()
+part_two = set()
 
 width = height = None
 
@@ -24,36 +25,46 @@ for line in file:
 height = y
 file.close()
 
-#print( width, height )
-
 # now calculate anitnodes for each antenna
 for k, v in antennas.items():
-  #print( k, v )
-
   num_pairs = len(v)
   for i in range(num_pairs):
     for j in range(i+1, num_pairs):
+      x1 = v[i][0]
+      y1 = v[i][1]
+      part_two.add( (x1, y1) )
 
-      #print( i, j )
+      x2 = v[j][0]
+      y2 = v[j][1]
+      part_two.add( (x2, y2) )
 
-      dx = v[i][0] - v[j][0]
-      dy = v[i][1] - v[j][1]
-      #print( dx, dy )
+      dx = x1 - x2
+      dy = y1 - y2
 
-      newX = v[i][0] + dx
-      newY = v[i][1] + dy
-      if newX >= 0 and newX < width and newY >= 0 and newY < height:
-        antinodes.add( (newX, newY) )
-        #print( '  ', newX, newY)
+      once = False
+      newX = x1 + dx
+      newY = y1 + dy
+      while newX >= 0 and newX < width and newY >= 0 and newY < height:
+        if not once:
+          part_one.add( (newX, newY) )
+          once = True
+        part_two.add( (newX, newY) )
 
-      newX = v[j][0] - dx
-      newY = v[j][1] - dy
-      if newX >= 0 and newX < width and newY >= 0 and newY < height:
-        antinodes.add( (newX, newY) )
-        #print( '  ', newX, newY)
+        newX += dx
+        newY += dy
 
-#print( antennas )
-#print( antinodes )
-part_one = len(antinodes)
-print( part_one )
+      once = False
+      newX = x2 - dx
+      newY = y2 - dy
+      while newX >= 0 and newX < width and newY >= 0 and newY < height:
+        if not once:
+          part_one.add( (newX, newY) )
+          once = True
+        part_two.add( (newX, newY) )
+
+        newX -= dx
+        newY -= dy
+
+print( len(part_one) )
+print( len(part_two) )
 
