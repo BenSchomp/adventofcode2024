@@ -38,24 +38,12 @@ for k, v in antennas.items():
       y2 = v[j][1]
       part_two.add( (x2, y2) )
 
-      dx = x1 - x2
-      dy = y1 - y2
+      dx = x2 - x1
+      dy = y2 - y1
 
       once = False
-      newX = x1 + dx
-      newY = y1 + dy
-      while newX >= 0 and newX < width and newY >= 0 and newY < height:
-        if not once:
-          part_one.add( (newX, newY) )
-          once = True
-        part_two.add( (newX, newY) )
-
-        newX += dx
-        newY += dy
-
-      once = False
-      newX = x2 - dx
-      newY = y2 - dy
+      newX = x1 - dx
+      newY = y1 - dy
       while newX >= 0 and newX < width and newY >= 0 and newY < height:
         if not once:
           part_one.add( (newX, newY) )
@@ -64,6 +52,18 @@ for k, v in antennas.items():
 
         newX -= dx
         newY -= dy
+
+      once = False
+      newX = x2 + dx
+      newY = y2 + dy
+      while newX >= 0 and newX < width and newY >= 0 and newY < height:
+        if not once:
+          part_one.add( (newX, newY) )
+          once = True
+        part_two.add( (newX, newY) )
+
+        newX += dx
+        newY += dy
 
 print( len(part_one) )
 print( len(part_two) )
