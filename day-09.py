@@ -1,12 +1,9 @@
-EMPTY = -1
-
-def display(d):
-  for c in d:
-    if c == EMPTY:
-      print( '.', end='' )
-    else:
-      print( c, end='' )
-  print()
+def checksum(d):
+  chksum = 0
+  for i in range(len(d)):
+    if d[i] != EMPTY:
+      chksum += (i * d[i])
+  return chksum
 
 def compact(d):
   max_i = len(d)
@@ -15,21 +12,21 @@ def compact(d):
   count = 0
 
   while True:
-    left = right = False
+    found_i = found_j = False
 
     while i < max_i:
       if d[i] == EMPTY:
-        left = True
+        found_i = True
         break
       i += 1
 
     while j >= 0:
       if d[j] != EMPTY:
-        right = True
+        found_j = True
         break
       j -= 1
 
-    if left and right:
+    if found_i and found_j:
       d[i] = d[j]
       count += 1
     else:
@@ -39,31 +36,61 @@ def compact(d):
     i += 1
     j -= 1
 
-  chksum = 0
-  for i in range(len(d)):
-    chksum += (i * d[i])
-  return chksum
+  return checksum(d)
+
+def compact2( d, s, e ):
+  max_i = len(d)
+  for file_id in range(len(s)-1, -1, -1):
+    size = s[file_id][0]
+    file_idx = s[file_id][1]
+
+    empty_indicies = sorted(e.keys())
+    for empty_idx in empty_indicies:
+      if empty_idx >= file_idx:
+        break
+
+      if e[empty_idx] >= size:
+        for offset in range(size):
+          d[empty_idx+offset] = file_id
+          d[file_idx+offset] = EMPTY
+
+        e[empty_idx+size] = e[empty_idx]-size
+        del e[empty_idx]
+        break
+
+  return checksum(d)
 
 # --- main ---
 
-file = open('day-09.txt', 'r')
-
+EMPTY = -1
 disk = []
+sizes = []
+empties = {}
+
+file = open('day-09.txt', 'r')
 for line in file:
   line = line.strip()
 
-  id = 0
+  id = i = 0
   for c in range(len(line)):
+    size = int(line[c])
     if c == id*2: # file
-      disk += [id]*int(line[c])
+      disk += [id]*size
+      sizes.append( (size, i))
       id += 1
+
     else: # space
-      disk += ( [EMPTY]*int(line[c]) )
+      disk += ( [EMPTY]*size )
+      if size > 0:
+        empties[i] = size
+
+    i += size
 
 file.close
+disk2 = disk.copy()
 
-display( disk )
 part_one = compact( disk )
-display( disk )
-
 print( part_one )
+
+part_two = compact2( disk2, sizes, empties )
+print( part_two )
