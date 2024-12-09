@@ -42,8 +42,7 @@ def compact2( d, sizes, empties ):
   for file_id in range( len(sizes)-1, -1, -1 ):
     (size, file_idx) = sizes[file_id]
 
-    empty_indicies = sorted(empties.keys())
-    for empty_idx in empty_indicies:
+    for empty_idx in sorted(empties.keys()):
       if empty_idx >= file_idx:
         break
 
