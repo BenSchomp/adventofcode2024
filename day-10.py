@@ -16,8 +16,7 @@ def score( curX, curY ):
 
     if grid[newY][newX] == 9:
       result += 1
-      if (newX, newY) not in summits:
-        summits.add( (newX, newY) )
+      summits.add( (newX, newY) )
     else:
       result += score( newX, newY )
 
